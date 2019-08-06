@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="catalogModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="category">
+    <Key>
+      <PropertyRef Name="categoryID" />
+    </Key>
+    <Property Name="categoryID" Type="Int32" Nullable="false" />
+    <Property Name="categoryName" Type="String" MaxLength="25" FixedLength="true" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="products" Relationship="Self.FK_product_category" FromRole="category" ToRole="product" />
+  </EntityType>
+  <EntityType Name="product">
+    <Key>
+      <PropertyRef Name="productID" />
+    </Key>
+    <Property Name="productID" Type="Int32" Nullable="false" />
+    <Property Name="productName" Type="String" MaxLength="25" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="productPrice" Type="Double" Nullable="false" />
+    <Property Name="productAmount" Type="Int32" Nullable="false" />
+    <Property Name="categoryID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="category" Relationship="Self.FK_product_category" FromRole="product" ToRole="category" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_product_category">
+    <End Role="category" Type="Self.category" Multiplicity="1" />
+    <End Role="product" Type="Self.product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="category">
+        <PropertyRef Name="categoryID" />
+      </Principal>
+      <Dependent Role="product">
+        <PropertyRef Name="categoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="catalogEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="categories" EntityType="Self.category" />
+    <EntitySet Name="products" EntityType="Self.product" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <AssociationSet Name="FK_product_category" Association="Self.FK_product_category">
+      <End Role="category" EntitySet="categories" />
+      <End Role="product" EntitySet="products" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
